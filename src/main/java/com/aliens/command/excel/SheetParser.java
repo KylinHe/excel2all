@@ -28,30 +28,30 @@ public class SheetParser {
 
     public static final String ARRAY_SPLIT = ",";
 
+    public static final int[] lineNo = new int[]{0,1,2};
+
     private ILogger log = new SystemLogger();
 
     private FormulaEvaluator evaluator;
 
+
     public TableData parse(Sheet sheet, FormulaEvaluator evaluator) {
-        TableData data = new TableData(sheet.getSheetName());
+        TableData data = new TableData(Config.getAlias(sheet.getSheetName()));
         this.evaluator = evaluator;
-        int fieldNameNo = sheet.getFirstRowNum();
-        int fieldTypeNo = sheet.getFirstRowNum() + 1;
-        int descRowNo = sheet.getFirstRowNum() + 2;
+        int fieldNameNo = sheet.getFirstRowNum() + lineNo[0];
+        int fieldTypeNo = sheet.getFirstRowNum() + lineNo[1];
+        int descRowNo = sheet.getFirstRowNum() + lineNo[2];
+
+        loadFieldName(data, sheet.getRow(fieldNameNo));
+        loadFieldType(data, sheet.getRow(fieldTypeNo));
+        loadFieldDesc(data, sheet.getRow(descRowNo));
 
         for (int rowIndex = 0; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
             Row row = sheet.getRow(rowIndex);
             if(row == null){
                 continue;
             }
-
-            if (rowIndex == fieldNameNo){
-                loadFieldName(data, row);
-            } else if (rowIndex == fieldTypeNo){
-                loadFieldType(data, row);
-            } else if (rowIndex == descRowNo) {
-                loadFieldDesc(data, row);
-            } else {
+            if (rowIndex != fieldNameNo && rowIndex != fieldTypeNo && rowIndex != descRowNo){
                 Cell cell = row.getCell(0);
                 if (cell == null) {
                     continue;
@@ -72,7 +72,7 @@ public class SheetParser {
         List<TableField> fieldInfo = data.getFieldInfo();
         for (int i = 0; i < fieldInfo.size(); i++) {
             field = fieldInfo.get(i);
-            Cell cell = dataRow.getCell(i);
+            Cell cell = dataRow.getCell(field.getIndex());
             if (cell != null) {
                 field.setAlias(cell.getStringCellValue());
             }
@@ -87,7 +87,7 @@ public class SheetParser {
         String name = null;
         for (int i = 0; i < fieldInfo.size(); i++) {
             field = fieldInfo.get(i);
-            Cell cell = dataRow.getCell(i);
+            Cell cell = dataRow.getCell(field.getIndex());
             if (cell == null) {
                 if (field.getFieldType() == FieldType.ID) {
                     return;
@@ -203,7 +203,10 @@ public class SheetParser {
             if (fieldName.equals("")) {
                 break;
             }
-            field = new TableField(fieldName);
+            if (Config.isFieldFilter(fieldName)) {
+                continue;
+            }
+            field = new TableField(fieldName, i);
             fields.add(field);
         }
         data.setFieldInfo(fields);

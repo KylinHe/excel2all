@@ -32,6 +32,6 @@ public enum FieldType {
                 return fieldType;
             }
         }
-        return null;
+        return STRING;
     }
 }

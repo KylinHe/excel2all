@@ -29,18 +29,30 @@ public class TableField {
     //refer other sheet
     private String ref;
 
+    //字段的索引位置
+    private int index = 0;
+
     //the field is enum;
     private Map<String, TableEnum> enums;
 
-    public TableField(String name) {
+    public TableField(String name, int index) {
         this.name = name;
         this.alias = name;
+        this.index = index;
     }
 
     public TableField(String name, FieldType fieldType) {
         this.name = name;
         this.alias = name;
         this.fieldType = fieldType;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void setFieldType(FieldType fieldType) {

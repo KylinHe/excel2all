@@ -1,7 +1,9 @@
 package com.aliens.command;
 
+import com.aliens.command.excel.Config;
 import com.aliens.command.excel.ExcelParser;
 import com.aliens.command.excel.JsonConverter;
+import com.aliens.command.excel.SheetParser;
 import com.aliens.command.excel.model.TableData;
 import com.aliens.command.excel.template.ConverterManager;
 import com.aliens.command.excel.template.dialect.GolandDialect;
@@ -22,9 +24,15 @@ public class Main {
 
     public static final String PARAM_NAME_FILTER = "-f"; //过滤模板名
 
+    public static final String PARAM_NAME_FIELD_FILTER = "-ff"; //过滤字段名
+
     public static final String PARAM_NAME_INPUT = "-i"; //json输出目录
 
     public static final String PARAM_NAME_OUTPUT = "-o"; //输出路径
+
+    public static final String PARAM_NAME_LINE = "-l"; //解析对应行号
+
+    public static final String PARAM_NAME_ALIAS = "-a"; //表格别名
 
     public static void main(String[] args) {
         //dealUECommand(args);
@@ -78,7 +86,40 @@ public class Main {
         }
 
         String filters = params.get(PARAM_NAME_FILTER);
+        if (filters != null){
+            String[] filter = filters.split(",");
+            Config.setFilter(filter);
+        }
 
+        String fieldFilter = params.get(PARAM_NAME_FIELD_FILTER);
+        if (fieldFilter != null){
+            String[] filter = fieldFilter.split(",");
+            Config.setFieldFilter(filter);
+        }
+
+        String lineNo = params.get(PARAM_NAME_LINE);
+        if (lineNo != null && !lineNo.isEmpty()) {
+            String[] lineNos = lineNo.split(",");
+            if (lineNos.length != SheetParser.lineNo.length) {
+                System.err.println("invalid line param -l :" + lineNo);
+                return;
+            } else {
+                SheetParser.lineNo[0] = Integer.parseInt(lineNos[0]);
+                SheetParser.lineNo[1] = Integer.parseInt(lineNos[1]);
+                SheetParser.lineNo[2] = Integer.parseInt(lineNos[2]);
+            }
+        }
+
+        String alias = params.get(PARAM_NAME_ALIAS);
+        if (alias != null && !alias.isEmpty()) {
+            String[] aliasArray = alias.split(",");
+            for (int i =0; i<aliasArray.length; i++) {
+                String[] aliasMapping = aliasArray[i].split(":");
+                if (aliasMapping != null && aliasMapping.length == 2) {
+                    Config.setAlias(aliasMapping[0].trim(), aliasMapping[1].trim());
+                }
+            }
+        }
 
 
 
@@ -86,11 +127,6 @@ public class Main {
 
         ExcelParser parser = new ExcelParser();
 
-
-        if (filters != null){
-            String[] filter = filters.split(",");
-            parser.setFilter(filter);
-        }
 
         parser.parse(inputFile);
 

@@ -29,29 +29,13 @@ public class ExcelParser {
 
     private ILogger log = new SystemLogger();
 
-    private String[] filter = null;
-
     public Map<String, TableData> getData() {
         return data;
     }
 
 
-    public void setFilter(String[] filter) {
-        this.filter = filter;
-    }
 
-    public boolean isFilter(String name) {
-        if (this.filter == null) {
-            return false;
-        }
 
-        for (String curr : this.filter) {
-            if (curr.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public void parse(final File srcFile) {
         parse0(srcFile);
@@ -95,7 +79,7 @@ public class ExcelParser {
         if (srcFile.getName().startsWith("~$")) {
             return 0;
         }
-        if (this.isFilter(srcFile.getName())) {
+        if (Config.isFilter(srcFile.getName())) {
             return 0;
         }
         Workbook workbook = null;
@@ -138,9 +122,9 @@ public class ExcelParser {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
             String sheetName = sheet.getSheetName();
             if (data.containsKey(sheetName)) {
-                log.Error("sheet" + sheet.getSheetName() + "already exists");
-            } else if (sheetName.startsWith(SheetParser.FILTER_CHAR)) {
-                log.Info("sheet" + sheet.getSheetName() + "is skip!");
+                log.Error("sheet " + sheet.getSheetName() + " already exists");
+            } else if (sheetName.startsWith(SheetParser.FILTER_CHAR) || Config.isFilter(sheetName)) {
+                log.Info("sheet " + sheet.getSheetName() + " is skip!");
             } else {
                 tableData = new SheetParser().parse(sheet, workbook.getCreationHelper().createFormulaEvaluator());
                 data.put(sheet.getSheetName(), tableData);
