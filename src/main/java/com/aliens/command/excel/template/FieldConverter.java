@@ -1,5 +1,6 @@
 package com.aliens.command.excel.template;
 
+import com.aliens.command.excel.Config;
 import com.aliens.command.excel.model.TableData;
 import com.aliens.command.excel.model.TableField;
 import com.aliens.command.excel.template.constant.Constants;
@@ -32,7 +33,14 @@ public class FieldConverter implements Converter {
                     currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_NAME, field.getName());
                     currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_FIX_NAME, field.getFixName());
                     currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_UPPER_NAME, field.getUpperName());
-                    currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_TYPE, dialect.getType(field.getFieldType()));
+                    //TODO 类型替换成对象
+
+                    String fieldTypeAlias = Config.getFiledTypeAlias(field.getName());
+                    if (fieldTypeAlias != null) {
+                        currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_TYPE, fieldTypeAlias);
+                    } else {
+                        currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_TYPE, dialect.getType(field.getFieldType()));
+                    }
                     content.append(currFieldContent);
                 }
                 content.append(template.getBodySuffix());

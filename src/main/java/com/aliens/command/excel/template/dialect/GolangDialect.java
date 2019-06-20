@@ -8,19 +8,19 @@ import java.util.Map;
 /**
  * Created by hejialin on 2018/3/12.
  */
-public class GolandDialect implements Dialect {
+public class GolangDialect implements Dialect {
 
-    private static GolandDialect instance;
+    private static GolangDialect instance;
 
     public static Map<FieldType, String> fieldTypemapping = new HashMap<FieldType, String>();
 
-    private GolandDialect() {
+    private GolangDialect() {
 
     }
 
-    public static synchronized GolandDialect getInstance() {
+    public static synchronized GolangDialect getInstance() {
         if (instance == null) {
-            instance = new GolandDialect();
+            instance = new GolangDialect();
         }
         return instance;
     }
@@ -51,6 +51,7 @@ public class GolandDialect implements Dialect {
         fieldTypemapping.put(FieldType.NAME, "string");
 
         fieldTypemapping.put(FieldType.REFER, "int32");
+        fieldTypemapping.put(FieldType.JSON, "string");
     }
 
     @Override

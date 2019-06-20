@@ -4,7 +4,7 @@ import com.aliens.command.excel.ExcelParser;
 import com.aliens.command.excel.model.TableData;
 import com.aliens.command.excel.template.constant.Constants;
 import com.aliens.command.excel.template.dialect.Dialect;
-import com.aliens.command.excel.template.dialect.GolandDialect;
+import com.aliens.command.excel.template.dialect.GolangDialect;
 import com.aliens.command.excel.template.model.Template;
 import com.aliens.util.FileUtil;
 
@@ -65,7 +65,7 @@ public class ConverterManager {
 
         ConverterManager template = new ConverterManager("/Users/hejialin/Downloads/testconvert/js.template");
 
-        String content = template.convert(parser.getData().values(), GolandDialect.getInstance());
+        String content = template.convert(parser.getData().values(), GolangDialect.getInstance());
 
         FileUtil.instance.writeContent("/Users/hejialin/Downloads/testconvert/js.out", content);
     }

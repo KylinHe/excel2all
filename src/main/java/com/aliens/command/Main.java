@@ -6,7 +6,7 @@ import com.aliens.command.excel.JsonConverter;
 import com.aliens.command.excel.SheetParser;
 import com.aliens.command.excel.model.TableData;
 import com.aliens.command.excel.template.ConverterManager;
-import com.aliens.command.excel.template.dialect.GolandDialect;
+import com.aliens.command.excel.template.dialect.GolangDialect;
 import com.aliens.util.FileUtil;
 
 import java.io.File;
@@ -22,9 +22,13 @@ public class Main {
 
     public static final String PARAM_NAME_TEMPLATE = "-t"; //模板路径
 
-    public static final String PARAM_NAME_FILTER = "-f"; //过滤模板名
+    public static final String PARAM_NAME_EXCLUDE = "-exclude"; //过滤表格名
+
+    public static final String PARAM_NAME_INCLUDE = "-include"; //包含表格名
 
     public static final String PARAM_NAME_FIELD_FILTER = "-ff"; //过滤字段名
+
+    public static final String PARAM_NAME_FIELD_TYPE_ALIAS = "-fta"; //字段类型别名替换
 
     public static final String PARAM_NAME_INPUT = "-i"; //json输出目录
 
@@ -85,10 +89,16 @@ public class Main {
             return;
         }
 
-        String filters = params.get(PARAM_NAME_FILTER);
+        String filters = params.get(PARAM_NAME_EXCLUDE);
         if (filters != null){
             String[] filter = filters.split(",");
-            Config.setFilter(filter);
+            Config.setExclude(filter);
+        }
+
+        String includes = params.get(PARAM_NAME_INCLUDE);
+        if (includes != null){
+            String[] include = includes.split(",");
+            Config.setInclude(include);
         }
 
         String fieldFilter = params.get(PARAM_NAME_FIELD_FILTER);
@@ -110,6 +120,17 @@ public class Main {
             }
         }
 
+        String fieldType = params.get(PARAM_NAME_FIELD_TYPE_ALIAS);
+        if (fieldType != null && !fieldType.isEmpty()) {
+            String[] aliasArray = fieldType.split(",");
+            for (int i =0; i<aliasArray.length; i++) {
+                String[] aliasMapping = aliasArray[i].split(":");
+                if (aliasMapping != null && aliasMapping.length == 2) {
+                    Config.setFiledTypeAlias(aliasMapping[0].trim(), aliasMapping[1].trim());
+                }
+            }
+        }
+
         String alias = params.get(PARAM_NAME_ALIAS);
         if (alias != null && !alias.isEmpty()) {
             String[] aliasArray = alias.split(",");
@@ -120,8 +141,6 @@ public class Main {
                 }
             }
         }
-
-
 
         String templatePath = params.get(PARAM_NAME_TEMPLATE);
 
@@ -138,11 +157,11 @@ public class Main {
             }
         } else if (dialect.equals("go")) {
             ConverterManager template = new ConverterManager(templatePath);
-            String content = template.convert(parser.getData().values(), GolandDialect.getInstance());
+            String content = template.convert(parser.getData().values(), GolangDialect.getInstance());
             FileUtil.instance.writeContent(outPath, content);
         } else if (dialect.equals("javascript")) {
             ConverterManager template = new ConverterManager(templatePath);
-            String content = template.convert(parser.getData().values(), GolandDialect.getInstance());
+            String content = template.convert(parser.getData().values(), GolangDialect.getInstance());
             FileUtil.instance.writeContent(outPath, content);
         }
     }

@@ -29,7 +29,7 @@ public class JsonConverter {
 
         FileWriter fileWriter = null;
         try {
-            fileWriter = new FileWriter(dstDirPath + File.separator + tableData.getAlias() + ".json");
+            fileWriter = new FileWriter(dstDirPath + File.separator + tableData.getName() + ".json");
             if (array.size() == 1) {
                 //JSON.writeJSONStringTo(array.get(0), fileWriter);
                 JSON.writeJSONString(fileWriter, array.get(0));

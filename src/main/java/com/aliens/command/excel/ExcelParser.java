@@ -79,7 +79,9 @@ public class ExcelParser {
         if (srcFile.getName().startsWith("~$")) {
             return 0;
         }
-        if (Config.isFilter(srcFile.getName())) {
+
+        if (Config.isFilter(srcFile.getName().split("\\.")[0])) {
+            log.Info("file " + srcFile.getName() + " is skipping!");
             return 0;
         }
         Workbook workbook = null;
@@ -124,7 +126,7 @@ public class ExcelParser {
             if (data.containsKey(sheetName)) {
                 log.Error("sheet " + sheet.getSheetName() + " already exists");
             } else if (sheetName.startsWith(SheetParser.FILTER_CHAR) || Config.isFilter(sheetName)) {
-                log.Info("sheet " + sheet.getSheetName() + " is skip!");
+                log.Info("sheet " + sheet.getSheetName() + " is skipping!");
             } else {
                 tableData = new SheetParser().parse(sheet, workbook.getCreationHelper().createFormulaEvaluator());
                 data.put(sheet.getSheetName(), tableData);

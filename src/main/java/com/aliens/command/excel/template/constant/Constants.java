@@ -9,8 +9,8 @@ public class Constants {
     public static final String TAG_ENUM_BEGIN = "<enum>";
     public static final String TAG_FIELD_BEGIN = "<field>";
     public static final String TAG_TABLE_END = "</table>";
-    public static final String TAG_ENUM_END = "</enum>";
-    public static final String TAG_FIELD_END = "</field>";
+//    public static final String TAG_ENUM_END = "</enum>";
+//    public static final String TAG_FIELD_END = "</field>";
 
     public static final String PARAM_TABLE_ALIAS = "${table_alias}";  //表格别名     兵种表
     public static final String PARAM_TABLE_NAME = "${table_name}"; //表格名       army
