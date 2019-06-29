@@ -3,11 +3,11 @@ package com.aliens.command.excel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.util.IOUtils;
+import com.aliens.command.excel.model.FieldType;
 import com.aliens.command.excel.model.TableData;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +19,10 @@ public class JsonConverter {
     public void convert(TableData tableData, String dstDirPath) {
         List<Map<String, Object>>  datas = tableData.getDataArray();
 
+        if (!tableData.haveField()) {
+            return;
+        }
+
         JSONArray array = new JSONArray();
         JSONObject rowData;
         for (Map<String, Object> data : datas) {
@@ -27,15 +31,18 @@ public class JsonConverter {
             array.add(rowData);
         }
 
-        FileWriter fileWriter = null;
+        String filePath = dstDirPath + File.separator + tableData.getName() + ".json";
+        FileOutputStream fileWriter = null;
+        //FileWriter fileWriter = null;
         try {
-            fileWriter = new FileWriter(dstDirPath + File.separator + tableData.getName() + ".json");
-            if (array.size() == 1) {
-                //JSON.writeJSONStringTo(array.get(0), fileWriter);
-                JSON.writeJSONString(fileWriter, array.get(0));
+            fileWriter = new FileOutputStream(filePath);
+            //fileWriter = new FileWriter();
+
+            boolean haveId = tableData.getField(0).getFieldType() == FieldType.ID;
+            if (array.size() == 1 && !haveId) {
+                JSON.writeJSONString(fileWriter, IOUtils.UTF8, array.get(0));
             } else {
-                JSON.writeJSONString(fileWriter, array);
-                //JSON.writeJSONStringTo(array, fileWriter);
+                JSON.writeJSONString(fileWriter, IOUtils.UTF8, array);
             }
 
         } catch (IOException e) {

@@ -38,7 +38,7 @@ public class EnumConverter implements Converter {
                 for (Map.Entry<String, TableEnum> enumInfo : field.getEnums().entrySet()) {
                     String currEnumContent = body.replace(Constants.PARAM_ENUM_ALIAS, enumInfo.getKey());
                     currEnumContent = currEnumContent.replace(Constants.PARAM_ENUM_NAME, enumInfo.getValue().getName());
-                    currEnumContent = currEnumContent.replace(Constants.PARAM_ENUM_TYPE, dialect.getType(field.getFieldType()));
+                    currEnumContent = currEnumContent.replace(Constants.PARAM_ENUM_TYPE, dialect.getType(field.getFieldType(), field.getSubType()));
                     currEnumContent = currEnumContent.replace(Constants.PARAM_ENUM_VALUE, String.valueOf(field.getEnum(enumInfo.getKey())));
                     content.append(currEnumContent);
                 }

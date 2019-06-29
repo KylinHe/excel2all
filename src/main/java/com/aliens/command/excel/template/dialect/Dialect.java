@@ -8,5 +8,5 @@ import com.aliens.command.excel.model.FieldType;
 public interface Dialect {
 
     //获取字段类型
-    String getType(FieldType fieldType);
+    String getType(FieldType fieldType, FieldType subFieldType);
 }

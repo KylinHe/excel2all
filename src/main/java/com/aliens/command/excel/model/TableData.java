@@ -195,6 +195,10 @@ public class TableData {
         return fieldInfo;
     }
 
+    public boolean haveField() {
+        return fieldInfo != null && !fieldInfo.isEmpty();
+    }
+
     public TableField getField(int index) {
         if (fieldInfo == null || fieldInfo.size() <= index) {
             return null;

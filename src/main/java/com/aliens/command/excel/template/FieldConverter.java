@@ -39,7 +39,7 @@ public class FieldConverter implements Converter {
                     if (fieldTypeAlias != null) {
                         currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_TYPE, fieldTypeAlias);
                     } else {
-                        currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_TYPE, dialect.getType(field.getFieldType()));
+                        currFieldContent = currFieldContent.replace(Constants.PARAM_FIELD_TYPE, dialect.getType(field.getFieldType(), field.getSubType()));
                     }
                     content.append(currFieldContent);
                 }

@@ -55,11 +55,17 @@ public class GolangDialect implements Dialect {
     }
 
     @Override
-    public String getType(FieldType fieldType) {
-        String result = fieldTypemapping.get(fieldType);
-        if (result == null) {
-            result = "int32";
+    public String getType(FieldType fieldType, FieldType subFieldType) {
+        String result = "";
+        if (fieldType == FieldType.ARRAY) {
+            result = "[]";
+            fieldType = subFieldType;
         }
-        return result;
+
+        String content = fieldTypemapping.get(fieldType);
+        if (content == null) {
+            content = "int32";
+        }
+        return result + content;
     }
 }
